@@ -15,6 +15,10 @@ struct ContentView: View {
     var body: some View {
         VStack {
             TextField("搜索", text: $viewModel.searchText)
+            if !viewModel.errorMessage.isEmpty {
+                Text(viewModel.errorMessage)
+                    .foregroundColor(.red)
+            }
             List(viewModel.repositories) {
                 Text("名称:\($0.name)\n描述:\($0.description ?? "")")
             }
@@ -26,20 +30,41 @@ extension ContentView {
     @MainActor final class ViewModel: ObservableObject {
         @Published var searchText: String = ""
         @Published var repositories: [Repository] = []
+        @Published var errorMessage: String = ""
         
         private var subscriptions: Set<AnyCancellable> = []
         
         init() {
 //            $searchText
-//                .debounce(for: 1, scheduler: DispatchQueue.main)
-//                .flatMap({SearchService.shared.searchRepository($0)})
+//            testFailMock()
+            testJustMock()
+
+        }
+        
+        func testFailMock(){
+//            SearchService.shared.searchRepositoryByFail("mock fail")
 //                .receive(on: DispatchQueue.main)
-//                .sink { error in
-//                    print(error)
-//                } receiveValue: { repos in
-//                    self.repositories = repos
+//                .sink(receiveCompletion: { completion in
+//                    switch completion {
+//                    case .finished: break
+//                    case .failure(let error):
+//                        // handle the error
+//                    }, receiveValue: { response in
+//                        // handle the response
+//                    })
+//                    .store(in: &self.subscriptions)
 //                }
-//                .store(in: &self.subscriptions)
+        }
+        
+        func testJustMock(){
+            SearchService.shared.searchRepositoryByJust("mock just")
+                .receive(on: DispatchQueue.main)
+                .sink { error in
+                    print("error:\(error)")
+                } receiveValue: { repos in
+                    self.repositories = repos
+                }
+                .store(in: &self.subscriptions)
         }
     }
 }

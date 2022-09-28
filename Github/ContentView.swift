@@ -15,6 +15,10 @@ struct ContentView: View {
     var body: some View {
         VStack {
             TextField("搜索", text: $viewModel.searchText)
+            if !viewModel.errorMessage.isEmpty {
+                Text(viewModel.errorMessage)
+                    .foregroundColor(.red)
+            }
             List(viewModel.repositories) {
                 Text("名称:\($0.name)\n描述:\($0.description ?? "")")
             }
@@ -26,39 +30,51 @@ extension ContentView {
     @MainActor final class ViewModel: ObservableObject {
         @Published var searchText: String = ""
         @Published var repositories: [Repository] = []
+        @Published var errorMessage: String = ""
         
         private var subscriptions: Set<AnyCancellable> = []
         
         init() {
-            $searchText
-//                .removeDuplicates()
-                .flatMap({SearchService.shared.searchRepository($0)})
+//            $searchText
+//                .flatMap({SearchService.shared.searchRepository($0)})
 //                .debounce(for: 1, scheduler: DispatchQueue.main)
+//                .receive(on: DispatchQueue.main)
+//                .sink { error in
+//                    print(error)
+//                } receiveValue: { repos in
+//                    self.repositories = repos
+//                }
+//                .store(in: &self.subscriptions)
+            
+//            testFailMock()
+            testJustMock()
+
+        }
+        
+        func testFailMock(){
+//            SearchService.shared.searchRepositoryByFail("mock fail")
+//                .receive(on: DispatchQueue.main)
+//                .sink(receiveCompletion: { completion in
+//                    switch completion {
+//                    case .finished: break
+//                    case .failure(let error):
+//                        // handle the error
+//                    }, receiveValue: { response in
+//                        // handle the response
+//                    })
+//                    .store(in: &self.subscriptions)
+//                }
+        }
+        
+        func testJustMock(){
+            SearchService.shared.searchRepositoryByJust("mock just")
                 .receive(on: DispatchQueue.main)
                 .sink { error in
-                    print(error)
+                    print("error:\(error)")
                 } receiveValue: { repos in
                     self.repositories = repos
                 }
                 .store(in: &self.subscriptions)
-
-//            $searchText
-//                .removeDuplicates()
-//                .map {
-//                    URLSession.shared.dataTaskPublisher(for: URL(string: "https://api.github.com/search/repositories?q=\($0)")!)
-//                        .map(\.data)
-//                        .decode(type: SearchRepositories.self, decoder: JSONDecoder())
-//                }
-//                .flatMap {$0}
-//                .map(\.items)
-//                .compactMap {$0}
-//                .receive(on: DispatchQueue.main)
-//                .sink(receiveCompletion: { completion in
-//                }, receiveValue: { value in
-//                    self.repositories.removeAll()
-//                    self.repositories.append(contentsOf: value)
-//                })
-//                .store(in: &self.subscriptions)
         }
     }
 }

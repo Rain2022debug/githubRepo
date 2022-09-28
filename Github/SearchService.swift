@@ -32,6 +32,19 @@ class SearchService{
         return publisher
     }
     
+    func searchRepositoryByJust(_ name: String) -> AnyPublisher<[Repository], Error> {
+        return Just([Repository(id: 1, name: "mock repository", description: "mock description")])
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher()
+    }
+    
+    func searchRepositoryByFail(_ name: String) -> AnyPublisher<[Repository], Error> {
+        return Fail(error:
+                        NSError(domain: "com.test.ios", code: 400, userInfo: [NSLocalizedDescriptionKey : "网络请求异常"])
+                    as Error)
+            .eraseToAnyPublisher()
+    }
+    
     private func makeUrlString(_ name: String) -> String {
         return "\(githubURL)\(name)"
             .replacingOccurrences(of: " ", with: "")

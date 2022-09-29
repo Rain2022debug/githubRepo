@@ -25,7 +25,8 @@ class SearchService{
     func searchRepository(_ name: String)-> AnyPublisher<[Repository],Error>{
         let publisher = URLSession.shared.dataTaskPublisher(for: URL(string: makeUrlString(name))!)
             .map{ $0.data }
-            .decode(type: SearchRepositories.self, decoder: JSONDecoder())
+//            .decode(type: SearchRepositories.self, decoder: JSONDecoder())
+            .tryMap { try JSONDecoder().decode(SearchRepositories.self, from: $0) }
             .map(\.items)
             .compactMap {$0}
             .eraseToAnyPublisher()

@@ -15,10 +15,10 @@ struct ContentView: View {
     var body: some View {
         VStack {
             TextField("搜索", text: $viewModel.searchText)
-            if !viewModel.errorMessage.isEmpty {
-                Text(viewModel.errorMessage)
-                    .foregroundColor(.red)
-            }
+//            if !viewModel.errorMessage.isEmpty {
+//                Text(viewModel.errorMessage)
+//                    .foregroundColor(.red)
+//            }
             List(viewModel.repositories) {
                 Text("名称:\($0.name)\n描述:\($0.description ?? "")")
             }
@@ -40,6 +40,37 @@ extension ContentView {
         private var subscriptions: Set<AnyCancellable> = []
         
         init() {
+            print("init")
+            $searchText
+                .filter{ !$0.lowercased().contains("s") }
+                .flatMap({SearchService.shared.searchRepository($0)})
+                .debounce(for: 1, scheduler: DispatchQueue.main)
+                .receive(on: DispatchQueue.main)
+                .sink { error in
+                    print(error)
+                } receiveValue: { repos in
+                    self.repositories = repos
+                    print("repo")
+                    print(self.repositories)
+                }
+                .store(in: &self.subscriptions)
+            
+//            testFailMock()
+//            testJustMock()
+            
+//            currentValueSubjectRepository
+//                .sink {[weak self] data in
+//                    self?.repositories.removeAll()
+//                    self?.repositories.append(contentsOf: data)
+//            }.store(in: &subscriptions)
+//
+//            passthroughSubjectRepository
+//                .eraseToAnyPublisher()
+//                .sink {[weak self] data in
+//                    self?.repositories.removeAll()
+//                    self?.repositories.append(contentsOf: data)
+//            }.store(in: &subscriptions)
+//
 //            $searchText
 //                .flatMap({SearchService.shared.searchRepository($0)})
 //                .debounce(for: 1, scheduler: DispatchQueue.main)
@@ -47,43 +78,28 @@ extension ContentView {
 //                .sink { error in
 //                    print(error)
 //                } receiveValue: { repos in
-//                    self.repositories = repos
+//                    self.currentValueSubjectRepository.value = repos
+//                    self.passthroughSubjectRepository.send(repos)
 //                }
 //                .store(in: &self.subscriptions)
             
-//            testFailMock()
-//            testJustMock()
-            
-            currentValueSubjectRepository
-                .sink {[weak self] data in
-                    self?.repositories.removeAll()
-                    self?.repositories.append(contentsOf: data)
-            }.store(in: &subscriptions)
-            
-            passthroughSubjectRepository
-                .eraseToAnyPublisher()
-                .sink {[weak self] data in
-                    self?.repositories.removeAll()
-                    self?.repositories.append(contentsOf: data)
-            }.store(in: &subscriptions)
-            
-            $searchText
-                .flatMap({SearchService.shared.searchRepository($0)})
-                .debounce(for: 1, scheduler: DispatchQueue.main)
-                .receive(on: DispatchQueue.main)
-                .sink { error in
-                    print(error)
-                } receiveValue: { repos in
-//                    self.currentValueSubjectRepository.value = repos
-                    self.passthroughSubjectRepository.send(repos)
-                }
-                .store(in: &self.subscriptions)
-            
-
-
+//                testMap()
 
         }
         
+//        func testMap(){
+//            var res = $searchText
+//                            .map({SearchService.shared.searchRepository($0)})
+//                            .flatMap { $0 }
+//                            .receive(on: DispatchQueue.main)
+//                            .sink { error in
+//                                print(error)
+//                            } receiveValue: { repoPublisher in
+//                                self.repositories = repoPublisher
+//                            }
+//            print(res)
+//        }
+
         func testFailMock(){
 //            SearchService.shared.searchRepositoryByFail("mock fail")
 //                .receive(on: DispatchQueue.main)

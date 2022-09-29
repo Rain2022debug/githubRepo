@@ -22,6 +22,10 @@ struct ContentView: View {
             List(viewModel.repositories) {
                 Text("名称:\($0.name)\n描述:\($0.description ?? "")")
             }
+            
+//            List(viewModel.currentValueSubjectRepository.value) {
+//                Text("名称:\($0.name)\n描述:\($0.description ?? "")")
+//            }
         }
     }
 }
@@ -31,13 +35,42 @@ extension ContentView {
         @Published var searchText: String = ""
         @Published var repositories: [Repository] = []
         @Published var errorMessage: String = ""
-        
+        var currentValueSubjectRepository: CurrentValueSubject<[Repository], Never> = .init([])
+        let passthroughSubjectRepository: PassthroughSubject<[Repository], Never> = .init()
         private var subscriptions: Set<AnyCancellable> = []
         
         init() {
 //            $searchText
 //            testFailMock()
-            testJustMock()
+//            testJustMock()
+            
+            currentValueSubjectRepository
+                .sink {[weak self] data in
+                    self?.repositories.removeAll()
+                    self?.repositories.append(contentsOf: data)
+            }.store(in: &subscriptions)
+            
+            passthroughSubjectRepository
+                .eraseToAnyPublisher()
+                .sink {[weak self] data in
+                    self?.repositories.removeAll()
+                    self?.repositories.append(contentsOf: data)
+            }.store(in: &subscriptions)
+            
+            $searchText
+                .flatMap({SearchService.shared.searchRepository($0)})
+                .debounce(for: 1, scheduler: DispatchQueue.main)
+                .receive(on: DispatchQueue.main)
+                .sink { error in
+                    print(error)
+                } receiveValue: { repos in
+//                    self.currentValueSubjectRepository.value = repos
+                    self.passthroughSubjectRepository.send(repos)
+                }
+                .store(in: &self.subscriptions)
+            
+
+
 
         }
         

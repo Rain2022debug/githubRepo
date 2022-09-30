@@ -98,7 +98,7 @@ extension ContentView {
 //            print(res)
 //        }
 
-        func testFailMock(){
+//        func testFailMock(){
 //            SearchService.shared.searchRepositoryByFail("mock fail")
 //                .receive(on: DispatchQueue.main)
 //                .sink(receiveCompletion: { completion in
@@ -111,7 +111,7 @@ extension ContentView {
 //                    })
 //                    .store(in: &self.subscriptions)
 //                }
-        }
+//        }
         
         func testJustMock(){
             SearchService.shared.searchRepositoryByJust("mock just")

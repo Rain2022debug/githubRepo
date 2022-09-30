@@ -15,7 +15,7 @@ struct ContentView: View {
     var body: some View {
         VStack {
             TextField("搜索", text: $viewModel.searchText)
-            TextField("搜索2", text: $viewModel.anotherSearchText)
+            TextField("搜索", text: $viewModel.anotherSearchText)
             if !viewModel.errorMessage.isEmpty {
                 Text(viewModel.errorMessage)
                     .foregroundColor(.red)
@@ -23,10 +23,6 @@ struct ContentView: View {
             List(viewModel.repositories) {
                 Text("名称:\($0.name)\n描述:\($0.description ?? "")")
             }
-            
-//            List(viewModel.currentValueSubjectRepository.value) {
-//                Text("名称:\($0.name)\n描述:\($0.description ?? "")")
-//            }
         }
     }
 }
@@ -42,6 +38,9 @@ extension ContentView {
         private var subscriptions: Set<AnyCancellable> = []
         
         init() {
+            testMerge()
+//            testZip()
+            
 //            $searchText
 //                .filter{ !$0.lowercased().contains("s") }
 //                .flatMap({SearchService.shared.searchRepository($0)})
@@ -53,16 +52,14 @@ extension ContentView {
 //                    self.repositories = repos
 //                }
 //                .store(in: &self.subscriptions)
-            
-//            testFailMock()
-//            testJustMock()
+
             
 //            currentValueSubjectRepository
 //                .sink {[weak self] data in
 //                    self?.repositories.removeAll()
 //                    self?.repositories.append(contentsOf: data)
 //            }.store(in: &subscriptions)
-//
+
 //            passthroughSubjectRepository
 //                .eraseToAnyPublisher()
 //                .sink {[weak self] data in
@@ -81,48 +78,6 @@ extension ContentView {
 //                    self.passthroughSubjectRepository.send(repos)
 //                }
 //                .store(in: &self.subscriptions)
-            
-//                testMap()
-
-        }
-        
-//        func testMap(){
-//            var res = $searchText
-//                            .map({SearchService.shared.searchRepository($0)})
-//                            .flatMap { $0 }
-//                            .receive(on: DispatchQueue.main)
-//                            .sink { error in
-//                                print(error)
-//                            } receiveValue: { repoPublisher in
-//                                self.repositories = repoPublisher
-//                            }
-//            print(res)
-//        }
-
-//        func testFailMock(){
-//            SearchService.shared.searchRepositoryByFail("mock fail")
-//                .receive(on: DispatchQueue.main)
-//                .sink(receiveCompletion: { completion in
-//                    switch completion {
-//                    case .finished: break
-//                    case .failure(let error):
-//                        // handle the error
-//                    }, receiveValue: { response in
-//                        // handle the response
-//                    })
-//                    .store(in: &self.subscriptions)
-//                }
-//        }
-        
-        func testJustMock(){
-            SearchService.shared.searchRepositoryByJust("mock just")
-                .receive(on: DispatchQueue.main)
-                .sink { error in
-                    print("error:\(error)")
-                } receiveValue: { repos in
-                    self.repositories = repos
-                }
-                .store(in: &self.subscriptions)
         }
         
         func testMerge() {

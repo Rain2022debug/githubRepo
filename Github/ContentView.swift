@@ -15,10 +15,11 @@ struct ContentView: View {
     var body: some View {
         VStack {
             TextField("搜索", text: $viewModel.searchText)
-//            if !viewModel.errorMessage.isEmpty {
-//                Text(viewModel.errorMessage)
-//                    .foregroundColor(.red)
-//            }
+            TextField("搜索2", text: $viewModel.anotherSearchText)
+            if !viewModel.errorMessage.isEmpty {
+                Text(viewModel.errorMessage)
+                    .foregroundColor(.red)
+            }
             List(viewModel.repositories) {
                 Text("名称:\($0.name)\n描述:\($0.description ?? "")")
             }

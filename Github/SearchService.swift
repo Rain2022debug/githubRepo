@@ -46,6 +46,21 @@ class SearchService{
             .eraseToAnyPublisher()
     }
     
+    func searchRepositoryByRelaceError(_ name: String) -> AnyPublisher<[Repository], Error> {
+        return Fail(error: NSError(domain: "com.test.ios", code: 400, userInfo: [NSLocalizedDescriptionKey : "网络请求异常"]) as Error)
+            .replaceError(with: [Repository(id: 1, name: "replaced repository", description: "replaced description")])
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher()
+    }
+    
+    func searchRepositoryByFirstFailed(_ name: String) -> AnyPublisher<[Repository], Error> {
+        return Fail(error: NSError(domain: "com.test.ios", code: 400, userInfo: [NSLocalizedDescriptionKey : "网络请求异常"]) as Error)
+            .catch { _ in
+                self.searchRepository(name)
+            }
+            .eraseToAnyPublisher()
+    }
+    
     private func makeUrlString(_ name: String) -> String {
         return "\(githubURL)\(name)"
             .replacingOccurrences(of: " ", with: "")

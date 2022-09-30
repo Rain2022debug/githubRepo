@@ -50,8 +50,6 @@ extension ContentView {
                     print(error)
                 } receiveValue: { repos in
                     self.repositories = repos
-                    print("repo")
-                    print(self.repositories)
                 }
                 .store(in: &self.subscriptions)
             

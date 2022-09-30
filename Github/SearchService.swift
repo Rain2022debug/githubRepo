@@ -33,6 +33,12 @@ class SearchService{
         return publisher
     }
     
+    func searchRepository(_ name: String, with anotherName: String) -> AnyPublisher<[Repository], Error> {
+        let publisher = searchRepository(name)
+        let anotherPublisher = searchRepository(anotherName)
+        return Publishers.Merge(publisher, anotherPublisher).eraseToAnyPublisher()
+    }
+    
     func searchRepositoryByJust(_ name: String) -> AnyPublisher<[Repository], Error> {
         return Just([Repository(id: 1, name: "mock repository", description: "mock description")])
             .setFailureType(to: Error.self)

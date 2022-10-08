@@ -52,18 +52,19 @@ extension ContentView {
         }
         
         func testFailMock(){
-//            SearchService.shared.searchRepositoryByFail("mock fail")
-//                .receive(on: DispatchQueue.main)
-//                .sink(receiveCompletion: { completion in
-//                    switch completion {
-//                    case .finished: break
-//                    case .failure(let error):
-//                        // handle the error
-//                    }, receiveValue: { response in
-//                        // handle the response
-//                    })
-//                    .store(in: &self.subscriptions)
-//                }
+            SearchService.shared.searchRepositoryByFail("mock fail")
+                .receive(on: DispatchQueue.main)
+                .sink(receiveCompletion: { completion in
+                    switch completion {
+                    case .finished: break
+                    case .failure(let error):
+                        self.errorMessage = error.localizedDescription
+                        print(error)
+                    }}, receiveValue: { repos in
+                        self.repositories = repos
+                    }
+                )
+                .store(in: &self.subscriptions)
         }
         
         func testJustMock(){

@@ -40,44 +40,6 @@ extension ContentView {
         init() {
             testMerge()
 //            testZip()
-            
-//            $searchText
-//                .filter{ !$0.lowercased().contains("s") }
-//                .flatMap({SearchService.shared.searchRepository($0)})
-//                .debounce(for: 1, scheduler: DispatchQueue.main)
-//                .receive(on: DispatchQueue.main)
-//                .sink { error in
-//                    print(error)
-//                } receiveValue: { repos in
-//                    self.repositories = repos
-//                }
-//                .store(in: &self.subscriptions)
-
-            
-//            currentValueSubjectRepository
-//                .sink {[weak self] data in
-//                    self?.repositories.removeAll()
-//                    self?.repositories.append(contentsOf: data)
-//            }.store(in: &subscriptions)
-
-//            passthroughSubjectRepository
-//                .eraseToAnyPublisher()
-//                .sink {[weak self] data in
-//                    self?.repositories.removeAll()
-//                    self?.repositories.append(contentsOf: data)
-//            }.store(in: &subscriptions)
-//
-//            $searchText
-//                .flatMap({SearchService.shared.searchRepository($0)})
-//                .debounce(for: 1, scheduler: DispatchQueue.main)
-//                .receive(on: DispatchQueue.main)
-//                .sink { error in
-//                    print(error)
-//                } receiveValue: { repos in
-//                    self.currentValueSubjectRepository.value = repos
-//                    self.passthroughSubjectRepository.send(repos)
-//                }
-//                .store(in: &self.subscriptions)
         }
         
         func testMerge() {

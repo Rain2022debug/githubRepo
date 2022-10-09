@@ -22,10 +22,6 @@ struct ContentView: View {
             List(viewModel.repositories) {
                 Text("名称:\($0.name)\n描述:\($0.description ?? "")")
             }
-            
-//            List(viewModel.currentValueSubjectRepository.value) {
-//                Text("名称:\($0.name)\n描述:\($0.description ?? "")")
-//            }
         }
     }
 }
@@ -40,10 +36,6 @@ extension ContentView {
         private var subscriptions: Set<AnyCancellable> = []
         
         init() {
-//            $searchText
-//            testFailMock()
-//            testJustMock()
-            
             currentValueSubjectRepository
                 .sink {[weak self] data in
                     self?.repositories.removeAll()
@@ -58,44 +50,14 @@ extension ContentView {
             }.store(in: &subscriptions)
             
             $searchText
-                .flatMap({SearchService.shared.searchRepository($0)})
                 .debounce(for: 1, scheduler: DispatchQueue.main)
+                .flatMap({SearchService.shared.searchRepository($0)})
                 .receive(on: DispatchQueue.main)
                 .sink { error in
                     print(error)
                 } receiveValue: { repos in
-//                    self.currentValueSubjectRepository.value = repos
-                    self.passthroughSubjectRepository.send(repos)
-                }
-                .store(in: &self.subscriptions)
-            
-
-
-
-        }
-        
-        func testFailMock(){
-//            SearchService.shared.searchRepositoryByFail("mock fail")
-//                .receive(on: DispatchQueue.main)
-//                .sink(receiveCompletion: { completion in
-//                    switch completion {
-//                    case .finished: break
-//                    case .failure(let error):
-//                        // handle the error
-//                    }, receiveValue: { response in
-//                        // handle the response
-//                    })
-//                    .store(in: &self.subscriptions)
-//                }
-        }
-        
-        func testJustMock(){
-            SearchService.shared.searchRepositoryByJust("mock just")
-                .receive(on: DispatchQueue.main)
-                .sink { error in
-                    print("error:\(error)")
-                } receiveValue: { repos in
-                    self.repositories = repos
+                    self.currentValueSubjectRepository.value = repos
+//                    self.passthroughSubjectRepository.send(repos)
                 }
                 .store(in: &self.subscriptions)
         }

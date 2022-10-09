@@ -12,7 +12,7 @@ struct SearchRepositories: Decodable {
     let items: [Repository]?
 }
 
-struct Repository: Identifiable, Decodable {
+struct Repository: Identifiable, Decodable,Equatable {
     let id: Int
     let name: String
     let description: String?

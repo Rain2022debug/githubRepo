@@ -35,19 +35,8 @@ extension ContentView {
         private var subscriptions: Set<AnyCancellable> = []
         
         init() {
-//            $searchText
-//                .flatMap({SearchService.shared.searchRepository($0)})
-//                .debounce(for: 1, scheduler: DispatchQueue.main)
-//                .receive(on: DispatchQueue.main)
-//                .sink { error in
-//                    print(error)
-//                } receiveValue: { repos in
-//                    self.repositories = repos
-//                }
-//                .store(in: &self.subscriptions)
-            
 //            testFailMock()
-            testJustMock()
+//            testJustMock()
 
         }
         
@@ -59,7 +48,6 @@ extension ContentView {
                     case .finished: break
                     case .failure(let error):
                         self.errorMessage = error.localizedDescription
-                        print(error)
                     }}, receiveValue: { repos in
                         self.repositories = repos
                     }

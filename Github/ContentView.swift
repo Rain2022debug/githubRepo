@@ -30,34 +30,15 @@ extension ContentView {
         private var subscriptions: Set<AnyCancellable> = []
         
         init() {
-            $searchText
-//                .removeDuplicates()
-                .flatMap({SearchService.shared.searchRepository($0)})
-//                .debounce(for: 1, scheduler: DispatchQueue.main)
-                .receive(on: DispatchQueue.main)
-                .sink { error in
-                    print(error)
-                } receiveValue: { repos in
-                    self.repositories = repos
-                }
-                .store(in: &self.subscriptions)
-
 //            $searchText
-//                .removeDuplicates()
-//                .map {
-//                    URLSession.shared.dataTaskPublisher(for: URL(string: "https://api.github.com/search/repositories?q=\($0)")!)
-//                        .map(\.data)
-//                        .decode(type: SearchRepositories.self, decoder: JSONDecoder())
-//                }
-//                .flatMap {$0}
-//                .map(\.items)
-//                .compactMap {$0}
+//                .debounce(for: 1, scheduler: DispatchQueue.main)
+//                .flatMap({SearchService.shared.searchRepository($0)})
 //                .receive(on: DispatchQueue.main)
-//                .sink(receiveCompletion: { completion in
-//                }, receiveValue: { value in
-//                    self.repositories.removeAll()
-//                    self.repositories.append(contentsOf: value)
-//                })
+//                .sink { error in
+//                    print(error)
+//                } receiveValue: { repos in
+//                    self.repositories = repos
+//                }
 //                .store(in: &self.subscriptions)
         }
     }

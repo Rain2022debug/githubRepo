@@ -37,15 +37,18 @@ extension ContentView {
         let passthroughSubjectRepository: PassthroughSubject<[Repository], Never> = .init()
         private var subscriptions: Set<AnyCancellable> = []
         
+        
         init() {
             testMerge()
 //            testZip()
         }
         
         func testMerge() {
-            let merge = Publishers.Merge($searchText.removeDuplicates(), $anotherSearchText.removeDuplicates())
-            merge
+            var searchText1 = $searchText.removeDuplicates()
                 .debounce(for: .seconds(1), scheduler: DispatchQueue.global(qos: .background))
+            var searchText2 = $anotherSearchText.removeDuplicates().debounce(for: .seconds(1), scheduler: DispatchQueue.global(qos: .background))
+            let merge = Publishers.Merge(searchText1, searchText2)
+            merge
                 .filter { !$0.isEmpty }
                 .removeDuplicates()
                 .flatMap {SearchService.shared.searchRepository($0)}
@@ -64,9 +67,11 @@ extension ContentView {
         }
         
         func testZip() {
-            let merge = Publishers.Zip($searchText.removeDuplicates(), $anotherSearchText.removeDuplicates())
-            merge
+            var searchText1 = $searchText.removeDuplicates()
                 .debounce(for: .seconds(1), scheduler: DispatchQueue.global(qos: .background))
+            var searchText2 = $anotherSearchText.removeDuplicates().debounce(for: .seconds(1), scheduler: DispatchQueue.global(qos: .background))
+            let merge = Publishers.Zip(searchText1, searchText2)
+            merge
                 .filter({ (first, second) in
                     return !first.isEmpty && !second.isEmpty
                 })
